@@ -107,8 +107,8 @@
       font-weight: 400;
     }
     #map {
-      flex: 1;
-      min-height: 0;
+      width: 100%;
+      height: 100%;
       border-radius: 0;
     }
     #map .leaflet-tile-pane { filter: saturate(0.85) brightness(0.95); }
@@ -189,17 +189,36 @@
     .leaflet-control-attribution {
       display: none !important;
     }
-    .leaflet-control-zoom {
-      border: none !important;
+    .map-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
     }
-    .leaflet-control-zoom a {
-      background: rgba(15, 23, 42, 0.9) !important;
-      color: #94a3b8 !important;
-      border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    .map-overlay-topright {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      z-index: 500;
     }
-    .leaflet-control-zoom a:hover {
-      background: rgba(30, 41, 59, 0.95) !important;
-      color: #e2e8f0 !important;
+    .contribute-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-decoration: none;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .contribute-btn:hover {
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(15, 23, 42, 0.95);
     }
     .country-tooltip {
       background: rgba(15, 23, 42, 0.95) !important;
@@ -350,6 +369,31 @@
     .popup-box button:hover {
       background: rgba(56, 189, 248, 0.25);
     }
+    .footer-links {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+      z-index: 100;
+    }
+    .footer-link {
+      font-size: 0.8rem;
+      color: #64748b;
+      text-decoration: none;
+      padding: 0.4rem 0.65rem;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .footer-link:hover {
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.3);
+      background: rgba(15, 23, 42, 0.95);
+    }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -371,7 +415,12 @@
         </a>
       </div>
     </header>
-    <div id="map"></div>
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-overlay-topright">
+        <a href="contribute.html" class="contribute-btn">Contribute</a>
+      </div>
+    </div>
     <div id="result" class="empty">
       <span class="result-dot" aria-hidden="true"></span>
       <div class="result-content">Select the first country...</div>
@@ -389,6 +438,9 @@
         </div>
         <button type="button" id="popup-close">Close</button>
       </div>
+    </div>
+    <div class="footer-links">
+      <a href="prevent_escalation.html" class="footer-link">What can we do to prevent escalation?</a>
     </div>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -416,7 +468,8 @@
         'Swaziland': 'Eswatini',
         'Cape Verde': 'Cabo Verde',
         'W. Sahara': 'Western Sahara',
-        'Brunei': 'Brunei Darussalam'
+        'Brunei': 'Brunei Darussalam',
+        'Greenland': 'Denmark'
       };
 
       let probMap = {};
@@ -436,7 +489,6 @@
       map.setMaxBounds(worldBounds);
       map.options.maxBoundsViscosity = 1;
 
-      L.control.zoom({ position: 'topright' }).addTo(map);
 
       document.getElementById('popup-close').addEventListener('click', hidePopup);
       document.getElementById('popup-overlay').addEventListener('click', function (e) {
