@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escalation probability</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(165deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      padding: 1.25rem 1.75rem;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 50%, rgba(15, 23, 42, 0.92) 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 10%, rgba(56, 189, 248, 0.35) 50%, transparent 90%);
+      pointer-events: none;
+    }
+    header .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    header .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    header .info-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #94a3b8;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    header .info-link:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      transform: scale(1.05);
+    }
+    header .info-link svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    header .header-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.05));
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    header .header-title {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #f1f5f9;
+      letter-spacing: 0.02em;
+    }
+    header .header-sub {
+      margin: 0.2rem 0 0;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      letter-spacing: 0.02em;
+      font-weight: 400;
+    }
+    #map {
+      flex: 1;
+      min-height: 0;
+      border-radius: 0;
+    }
+    #map .leaflet-tile-pane { filter: saturate(0.85) brightness(0.95); }
+    #result {
+      padding: 1.35rem 1.75rem;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.98) 100%);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+      min-height: 5rem;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      position: relative;
+    }
+    #result::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 10%, rgba(56, 189, 248, 0.35) 50%, transparent 90%);
+      pointer-events: none;
+    }
+    #result.empty {
+      color: #64748b;
+    }
+    #result.empty .result-content {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    #result .result-dot {
+      display: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.5);
+      flex-shrink: 0;
+    }
+    #result.empty .result-dot {
+      display: block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+    #result:not(.empty) .result-content {
+      border-left: 3px solid rgba(56, 189, 248, 0.6);
+      padding-left: 1rem;
+    }
+    #result .prob {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #38bdf8;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+    #result .error-msg {
+      color: #f87171;
+    }
+    #result strong {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .leaflet-interactive {
+      cursor: pointer;
+      transition: fill 0.2s ease, filter 0.2s ease;
+    }
+    .leaflet-interactive:hover {
+      fill: #475569;
+      filter: brightness(1.1);
+    }
+    .leaflet-interactive.selected {
+      fill: #0ea5e9;
+      filter: brightness(1.15);
+    }
+    .leaflet-control-attribution {
+      display: none !important;
+    }
+    .leaflet-control-zoom {
+      border: none !important;
+    }
+    .leaflet-control-zoom a {
+      background: rgba(15, 23, 42, 0.9) !important;
+      color: #94a3b8 !important;
+      border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: rgba(30, 41, 59, 0.95) !important;
+      color: #e2e8f0 !important;
+    }
+    .country-tooltip {
+      background: rgba(15, 23, 42, 0.95) !important;
+      border: 1px solid rgba(148, 163, 184, 0.25) !important;
+      color: #e2e8f0 !important;
+      font-family: 'DM Sans', system-ui, sans-serif !important;
+      font-size: 0.85rem !important;
+      padding: 0.4rem 0.65rem !important;
+      border-radius: 6px !important;
+      white-space: nowrap !important;
+    }
+    .country-tooltip::before {
+      border-top-color: rgba(15, 23, 42, 0.95) !important;
+    }
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .popup-overlay.visible {
+      display: flex;
+    }
+    .popup-box {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .popup-box h3 {
+      margin: 0 0 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #94a3b8;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .popup-box .countries {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+    .popup-box .countries span.sep {
+      color: #64748b;
+      font-weight: 400;
+      margin: 0 0.25rem;
+    }
+    .popup-box .prob-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 0.5rem;
+    }
+    .popup-box .risk-badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+    .popup-box .risk-low { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .popup-box .risk-medium { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+    .popup-box .risk-high { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .popup-box .error-msg { color: #f87171; font-size: 0.85rem; }
+    .popup-box .hint {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.75rem;
+    }
+    .popup-explanation-wrap {
+      margin-top: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .popup-explanation-wrap h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+      margin: 0 0 0.5rem;
+      letter-spacing: 0.03em;
+    }
+    .popup-explanation {
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 0;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+    .explain-summary {
+      padding: 0.6rem 0.85rem;
+      color: #64748b;
+      font-size: 0.75rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    .explain-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .explain-table th {
+      text-align: left;
+      padding: 0.5rem 0.85rem;
+      font-weight: 600;
+      font-size: 0.7rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    .explain-table th:nth-child(1) { width: 38%; }
+    .explain-table th:nth-child(2) { width: 12%; }
+    .explain-table th:nth-child(3) { width: 22%; }
+    .explain-table th:nth-child(4) { width: 28%; }
+    .explain-table td {
+      padding: 0.5rem 0.85rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+      color: #cbd5e1;
+      vertical-align: top;
+    }
+    .explain-table tr:last-child td { border-bottom: none; }
+    .explain-table .contrib-up { color: #f87171; }
+    .explain-table .contrib-down { color: #4ade80; }
+    .explain-table .contrib-neutral { color: #64748b; }
+    .popup-box button {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .popup-box button:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="header-inner">
+        <div class="header-brand">
+          <div class="header-icon" aria-hidden="true">◇</div>
+          <div>
+            <p class="header-title">Escalation probability</p>
+            <p class="header-sub">Select two countries on the map to compare risk</p>
+          </div>
+        </div>
+        <a href="how_does_it_work.html" class="info-link" title="How does it work?" aria-label="How does it work?">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </a>
+      </div>
+    </header>
+    <div id="map"></div>
+    <div id="result" class="empty">
+      <span class="result-dot" aria-hidden="true"></span>
+      <div class="result-content">Select the first country...</div>
+    </div>
+    <div id="popup-overlay" class="popup-overlay" aria-hidden="true">
+      <div class="popup-box">
+        <h3 id="popup-title">Escalation probability</h3>
+        <div class="countries" id="popup-countries"></div>
+        <div class="prob-value" id="popup-prob"></div>
+        <div id="popup-risk"></div>
+        <p class="hint" id="popup-hint"></p>
+        <div class="popup-explanation-wrap" id="popup-explanation-wrap">
+          <h4>What drove this score?</h4>
+          <div class="popup-explanation" id="popup-explanation"></div>
+        </div>
+        <button type="button" id="popup-close">Close</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    (function () {
+      const GEO_TO_CSV = {
+        'Russia': 'Russian Federation',
+        'United States of America': 'United States',
+        'United Republic of Tanzania': "Tanzania, United Republic of",
+        'Iran': "Iran, Islamic Republic of",
+        'South Korea': "Korea, Republic of",
+        'North Korea': "Korea, Democratic People's Republic of",
+        'Vietnam': 'Viet Nam',
+        'Bolivia': "Bolivia, Plurinational State of",
+        'Venezuela': "Venezuela, Bolivarian Republic of",
+        'Moldova': "Moldova, Republic of",
+        'Democratic Republic of the Congo': "Congo, The Democratic Republic of the",
+        'Taiwan': "Taiwan, Province of China",
+        'Syria': 'Syrian Arab Republic',
+        'Laos': "Lao People's Democratic Republic",
+        'Micronesia': "Micronesia, Federated States of",
+        'Ivory Coast': "Côte d'Ivoire",
+        'Turkey': 'Türkiye',
+        'Macedonia': 'North Macedonia',
+        'Swaziland': 'Eswatini',
+        'Cape Verde': 'Cabo Verde',
+        'W. Sahara': 'Western Sahara',
+        'Brunei': 'Brunei Darussalam'
+      };
+
+      let probMap = {};
+      let selected = [];
+      let geoLayer = null;
+      let selectedLayers = [];
+
+      const resultEl = document.getElementById('result');
+      const map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false,
+        minZoom: 2,
+        maxZoom: 8
+      }).setView([20, 0], 2);
+
+      const worldBounds = L.latLngBounds(L.latLng(-85, -180), L.latLng(85, 180));
+      map.setMaxBounds(worldBounds);
+      map.options.maxBoundsViscosity = 1;
+
+      L.control.zoom({ position: 'topright' }).addTo(map);
+
+      document.getElementById('popup-close').addEventListener('click', hidePopup);
+      document.getElementById('popup-overlay').addEventListener('click', function (e) {
+        if (e.target === this) hidePopup();
+      });
+
+      function normKey(a, b) {
+        return [a, b].sort().join('|');
+      }
+
+      function csvName(geoName) {
+        if (!geoName) return null;
+        return GEO_TO_CSV[geoName] || geoName;
+      }
+
+      function setResult(html, isPlaceholder) {
+        const contentEl = resultEl.querySelector('.result-content');
+        if (contentEl) contentEl.innerHTML = html;
+        resultEl.classList.toggle('empty', isPlaceholder);
+      }
+
+      function getData(name1, name2) {
+        const a = csvName(name1);
+        const b = csvName(name2);
+        if (!a || !b) return null;
+        const key = normKey(a, b);
+        const val = probMap[key];
+        if (val === undefined) return null;
+        if (typeof val === 'object' && val !== null) return val;
+        if (typeof val === 'string' && val.startsWith('ERROR')) return { prob: val, explanation: '' };
+        return { prob: Number(val), explanation: '' };
+      }
+
+      function getRiskLevel(prob) {
+        if (prob < 0.15) return { label: 'Low risk', className: 'risk-low' };
+        if (prob < 0.4) return { label: 'Medium risk', className: 'risk-medium' };
+        return { label: 'High risk', className: 'risk-high' };
+      }
+
+      function parseExplanation(text) {
+        if (!text || !text.trim()) return null;
+        const out = { logit: null, bias: null, contributions: [] };
+        const logitMatch = text.match(/logit z = ([-\d.]+)/);
+        const biasMatch = text.match(/bias = ([-\d.]+)/);
+        if (logitMatch) out.logit = parseFloat(logitMatch[1]);
+        if (biasMatch) out.bias = parseFloat(biasMatch[1]);
+        const bulletRegex = /^\s*•\s+(.+?)\s+=\s+([\d.]+)\s+\(weight\s+([+-]?[\d.]+)\)\s+→\s+contribution\s+([+-]?[\d.]+)\s+\((increases risk|neutral risk|lowers risk|decreases risk)\)\.?\s*(.*)$/gm;
+        let m;
+        while ((m = bulletRegex.exec(text)) !== null) {
+          out.contributions.push({
+            name: m[1].trim(),
+            value: parseFloat(m[2]),
+            weight: parseFloat(m[3]),
+            contribution: parseFloat(m[4]),
+            effect: m[5],
+            description: (m[6] || '').trim()
+          });
+        }
+        return out;
+      }
+
+      function renderExplanation(parsed) {
+        if (!parsed || !parsed.contributions.length) return '';
+        const summary = parsed.logit != null && parsed.bias != null
+          ? `Model: logit z = ${parsed.logit.toFixed(2)}, bias = ${parsed.bias.toFixed(2)}.`
+          : '';
+        const effectClass = function (effect) {
+          if (effect === 'increases risk') return 'contrib-up';
+          if (effect === 'lowers risk' || effect === 'decreases risk') return 'contrib-down';
+          return 'contrib-neutral';
+        };
+        const effectLabel = function (effect) {
+          if (effect === 'increases risk') return '↑ increases';
+          if (effect === 'lowers risk' || effect === 'decreases risk') return '↓ lowers';
+          return '— neutral';
+        };
+        const fmt = (n) => (n >= 0 ? '+' : '') + n.toFixed(3);
+        let rows = parsed.contributions.map(function (c) {
+          return `<tr><td>${escapeHtml(c.name)}</td><td>${c.value.toFixed(3)}</td><td class="${effectClass(c.effect)}">${fmt(c.contribution)}</td><td class="${effectClass(c.effect)}">${effectLabel(c.effect)}</td></tr>`;
+        }).join('');
+        return (summary ? `<div class="explain-summary">${summary}</div>` : '') +
+          '<table class="explain-table"><thead><tr><th>Feature</th><th>Value</th><th>Contribution</th><th>Effect</th></tr></thead><tbody>' + rows + '</tbody></table>';
+      }
+
+      function escapeHtml(s) {
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      function showPopup(countryA, countryB, data) {
+        const prob = typeof data.prob === 'number' ? data.prob : 0;
+        const pct = (prob * 100).toFixed(2);
+        const risk = getRiskLevel(prob);
+        const oneIn = prob <= 0 || prob >= 1 ? '—' : (1 / prob).toFixed(0);
+        document.getElementById('popup-countries').innerHTML = `${countryA}<span class="sep">↔</span>${countryB}`;
+        document.getElementById('popup-prob').textContent = pct + '%';
+        const riskEl = document.getElementById('popup-risk');
+        riskEl.innerHTML = typeof data.prob === 'string' ? `<span class="error-msg">${data.prob}</span>` : `<span class="risk-badge ${risk.className}">${risk.label}</span>`;
+        riskEl.className = '';
+        document.getElementById('popup-hint').textContent = prob > 0 && prob < 1 ? `Roughly 1 in ${oneIn} chance of escalation between this pair.` : '';
+        const explEl = document.getElementById('popup-explanation');
+        const explWrap = document.getElementById('popup-explanation-wrap');
+        if (data.explanation && data.explanation.trim()) {
+          const parsed = parseExplanation(data.explanation);
+          if (parsed && parsed.contributions.length > 0) {
+            explEl.innerHTML = renderExplanation(parsed);
+            explWrap.style.display = 'block';
+          } else {
+            explEl.textContent = data.explanation.trim();
+            explWrap.style.display = 'block';
+          }
+        } else {
+          explWrap.style.display = 'none';
+        }
+        document.getElementById('popup-overlay').classList.add('visible');
+        document.getElementById('popup-overlay').setAttribute('aria-hidden', 'false');
+      }
+
+      function hidePopup() {
+        document.getElementById('popup-overlay').classList.remove('visible');
+        document.getElementById('popup-overlay').setAttribute('aria-hidden', 'true');
+      }
+
+      function updateResult() {
+        if (selected.length === 0) {
+          setResult('Select the first country...', true);
+          return;
+        }
+        if (selected.length === 1) {
+          setResult('Now select the second country.', true);
+          return;
+        }
+        const [a, b] = selected;
+        const data = getData(a, b);
+        if (data === null) {
+          setResult(`Pair <strong>${a}</strong> – <strong>${b}</strong>: data not available.`, false);
+          return;
+        }
+        const prob = data.prob;
+        if (typeof prob === 'string') {
+          setResult(`Pair <strong>${a}</strong> – <strong>${b}</strong>: <span class="error-msg">${prob}</span>`, false);
+          showPopup(a, b, data);
+          return;
+        }
+        const pct = (prob * 100).toFixed(2);
+        setResult(`Escalation probability between <strong>${a}</strong> and <strong>${b}</strong>: <span class="prob">${pct}%</span>`, false);
+        showPopup(a, b, data);
+      }
+
+      function selectCountry(name, layer) {
+        if (selected.includes(name)) return;
+        if (selected.length === 2) {
+          selected = [];
+          selectedLayers.forEach(l => l.setStyle({ fillColor: '#334155', fillOpacity: 0.5 }));
+          selectedLayers = [];
+        }
+        selected.push(name);
+        if (layer) {
+          layer.setStyle({ fillColor: '#0ea5e9', fillOpacity: 0.85 });
+          selectedLayers.push(layer);
+        }
+        updateResult();
+      }
+
+      function loadGeoJson() {
+        fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
+          .then(r => r.json())
+          .then(geojson => {
+            geoLayer = L.geoJSON(geojson, {
+              style: { color: '#334155', weight: 0.5, fillColor: '#334155', fillOpacity: 0.5 },
+              onEachFeature: function (feature, layer) {
+                const name = feature.properties.ADMIN || feature.properties.name || '';
+                layer.bindTooltip(name, {
+                  permanent: false,
+                  direction: 'top',
+                  className: 'country-tooltip',
+                  offset: [0, -5]
+                });
+                layer.on('click', function () {
+                  selectCountry(name, layer);
+                });
+              }
+            }).addTo(map);
+          })
+          .catch(() => setResult('Error loading map.', false));
+      }
+
+      function splitCSVRows(text) {
+        const rows = [];
+        let start = 0;
+        let inQuotes = false;
+        for (let i = 0; i <= text.length; i++) {
+          const c = text[i] || '\n';
+          if (c === '"') inQuotes = !inQuotes;
+          else if ((c === '\n' || c === '\r') && !inQuotes) {
+            rows.push(text.slice(start, i));
+            if (c === '\r' && text[i + 1] === '\n') i++;
+            start = i + 1;
+          }
+        }
+        if (start < text.length) rows.push(text.slice(start));
+        return rows;
+      }
+
+      function parseCSVLine(line) {
+        const out = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const c = line[i];
+          if (c === '"') {
+            inQuotes = !inQuotes;
+          } else if (inQuotes) {
+            cur += c;
+          } else if (c === ',') {
+            out.push(cur.trim());
+            cur = '';
+          } else {
+            cur += c;
+          }
+        }
+        out.push(cur.trim());
+        return out;
+      }
+
+      fetch('prob_explained.csv')
+        .then(r => r.text())
+        .then(text => {
+          const rows = splitCSVRows(text.trim());
+          for (let i = 1; i < rows.length; i++) {
+            const row = parseCSVLine(rows[i]);
+            if (row.length >= 3) {
+              const key = normKey(row[0], row[1]);
+              const probVal = row[2];
+              const explanation = row.length >= 4 ? row[3] : '';
+              const num = parseFloat(probVal);
+              if (String(probVal).startsWith('ERROR')) {
+                probMap[key] = { prob: probVal, explanation: explanation };
+              } else if (!Number.isNaN(num)) {
+                probMap[key] = { prob: num, explanation: explanation };
+              }
+            }
+          }
+          loadGeoJson();
+        })
+        .catch(() => setResult('Error loading prob_explained.csv.', false));
+    })();
+  </script>
+</body>
+</html>
