@@ -592,7 +592,13 @@
         document.getElementById('popup-hint').textContent = prob > 0 && prob < 1 ? `Roughly 1 in ${oneIn} chance of escalation between this pair.` : '';
         const explEl = document.getElementById('popup-explanation');
         const explWrap = document.getElementById('popup-explanation-wrap');
-        if (data.explanation && data.explanation.trim()) {
+        if (data.contributions && data.contributions.length > 0) {
+          const p = typeof data.prob === 'number' ? data.prob : 0;
+          const logit = p > 0 && p < 1 ? Math.log(p / (1 - p)) : null;
+          const parsed = { logit, bias: data.bias != null ? data.bias : null, contributions: data.contributions };
+          explEl.innerHTML = renderExplanation(parsed);
+          explWrap.style.display = 'block';
+        } else if (data.explanation && data.explanation.trim()) {
           const parsed = parseExplanation(data.explanation);
           if (parsed && parsed.contributions.length > 0) {
             explEl.innerHTML = renderExplanation(parsed);
@@ -715,27 +721,69 @@
         return out;
       }
 
-      fetch('prob_explained.csv')
+      const FEATURE_NAMES = [
+        'News negativity',
+        'News intensity',
+        'Escalation / conflict events',
+        'Shared border',
+        'Geographic closeness',
+        'Common official language',
+        'Both in NATO',
+        'Military expenditure (mean)',
+        'Recent interstate conflict'
+      ];
+
+      function buildContributionsFromRow(row) {
+        if (row.length < 22) return null;
+        const contributions = [];
+        for (let k = 0; k < 9; k++) {
+          const val = parseFloat(row[3 + k]);
+          const w = parseFloat(row[13 + k]);
+          if (Number.isNaN(val) || Number.isNaN(w)) continue;
+          const c = val * w;
+          let effect = 'neutral risk';
+          if (c > 0) effect = 'increases risk';
+          else if (c < 0) effect = 'decreases risk';
+          contributions.push({
+            name: FEATURE_NAMES[k],
+            value: val,
+            weight: w,
+            contribution: c,
+            effect: effect
+          });
+        }
+        contributions.sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+        return contributions;
+      }
+
+      fetch('data/prob.csv')
         .then(r => r.text())
         .then(text => {
-          const rows = splitCSVRows(text.trim());
-          for (let i = 1; i < rows.length; i++) {
-            const row = parseCSVLine(rows[i]);
+          const lines = text.trim().split(/\r?\n/);
+          for (let i = 1; i < lines.length; i++) {
+            const row = parseCSVLine(lines[i]);
             if (row.length >= 3) {
               const key = normKey(row[0], row[1]);
               const probVal = row[2];
-              const explanation = row.length >= 4 ? row[3] : '';
               const num = parseFloat(probVal);
               if (String(probVal).startsWith('ERROR')) {
-                probMap[key] = { prob: probVal, explanation: explanation };
+                probMap[key] = { prob: probVal, contributions: null };
               } else if (!Number.isNaN(num)) {
-                probMap[key] = { prob: num, explanation: explanation };
+                const contributions = buildContributionsFromRow(row);
+                const bias = row.length > 12 ? parseFloat(row[12]) : null;
+                const logit = num > 0 && num < 1 ? Math.log(num / (1 - num)) : null;
+                probMap[key] = {
+                  prob: num,
+                  contributions: contributions,
+                  logit: logit,
+                  bias: Number.isNaN(bias) ? null : bias
+                };
               }
             }
           }
           loadGeoJson();
         })
-        .catch(() => setResult('Error loading prob_explained.csv.', false));
+        .catch(() => setResult('Error loading data/prob.csv.', false));
     })();
   </script>
 </body>
