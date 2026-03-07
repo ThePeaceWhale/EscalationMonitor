@@ -756,7 +756,7 @@
         return contributions;
       }
 
-      fetch('data/prob.csv')
+      fetch('data/prob_bias_<-2.6>.csv')
         .then(r => r.text())
         .then(text => {
           const lines = text.trim().split(/\r?\n/);
@@ -788,3 +788,4 @@
   </script>
 </body>
 </html>
+
