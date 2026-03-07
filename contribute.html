@@ -113,13 +113,31 @@
       border-color: rgba(74, 222, 128, 0.45);
       background: rgba(74, 222, 128, 0.1);
     }
+    .qr-wrap {
+      text-align: center;
+      margin: 1.25rem 0;
+    }
+    .qr-wrap img {
+      display: block;
+      margin: 0 auto;
+      width: 180px;
+      height: 180px;
+      padding: 12px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    .qr-wrap .qr-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
     .note {
       font-size: 0.8rem;
       color: #64748b;
       margin: 0;
       line-height: 1.5;
     }
-    .note code { font-size: 0.75rem; color: #94a3b8; }
   </style>
 </head>
 <body>
@@ -132,12 +150,16 @@
     </div>
     <div class="card">
       <div class="card-label">Bitcoin address</div>
+      <div class="qr-wrap">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bc1qptrc064mfv52fs5p53z29w9vn8re7s6cljfgxl" width="180" height="180" alt="QR code for Bitcoin address" />
+        <span class="qr-label">Scan to donate</span>
+      </div>
       <div class="address-row">
-        <div class="address" id="btc-address">bc1qxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+        <div class="address" id="btc-address">bc1qptrc064mfv52fs5p53z29w9vn8re7s6cljfgxl</div>
         <button type="button" class="copy-btn" id="copy-btn">Copy</button>
       </div>
     </div>
-    <p class="note">To use your own address, edit <code>contribute.html</code> and replace the content of the element with id <code>btc-address</code>.</p>
+    <p class="note">Donations support the project and are transferred to The Giving Block for peace and social justice initiatives.</p>
   </div>
   <script>
     (function () {
@@ -146,7 +168,7 @@
       if (btn && addressEl) {
         btn.addEventListener('click', function () {
           var text = addressEl.textContent.trim();
-          if (!text || text.indexOf('xxx') !== -1) return;
+          if (!text) return;
           navigator.clipboard.writeText(text).then(function () {
             btn.textContent = 'Copied!';
             btn.classList.add('copied');
