@@ -171,12 +171,12 @@
         <div class="sigmoid">The sigmoid σ(z) squashes <em>z</em> into (0, 1). Higher <em>z</em> → higher <em>P</em> (more escalation risk); lower <em>z</em> → lower <em>P</em>.</div>
       </div>
       <p>The <strong>contribution</strong> of feature <em>k</em> to the logit is cₖ = wₖ·xₖ. So z = b + c₁ + … + c₉. The popup shows each cₖ so you can see which factors push the score up or down.</p>
-      <p>The 9 features (all in [0, 1]) are: <em>news negativity</em>, <em>news intensity</em>, <em>escalation/conflict events</em> (GDELT); <em>contiguity</em>, <em>distance closeness</em>, <em>common language</em> (CEPII); <em>both in NATO</em>; <em>military expenditure (mean)</em> (World Bank); <em>recent interstate conflict</em> (UCDP). For scaling rules and full details, see <code>readme.md</code>.</p>
+      <p>The 9 features (all in [0, 1]) are: <em>news negativity</em>, <em>news intensity</em>, <em>escalation/conflict events</em> (GDELT); <em>contiguity</em>, <em>distance closeness</em>, <em>common language</em> (CEPII); <em>both in NATO</em>; <em>military expenditure (mean)</em> (World Bank); <em>recent interstate conflict</em> (UCDP). </p>
     </section>
 
     <section>
       <h2>About the data</h2>
-      <p>Probabilities and explanations are loaded from <code>prob_explained.csv</code>, which lists each country pair with its probability and a text justification (logit, bias, and per-feature contributions). The map uses standard country names; some names may differ slightly between the map and the CSV, but the tool matches them where possible.</p>
+      <p>Probabilities and explanations are loaded from a csv file we pre-computed, which lists each country pair with its probability and a text justification (logit, bias, and per-feature contributions). The map uses standard country names; some names may differ slightly between the map and the CSV, but the tool matches them where possible.</p>
       <p class="note">This tool is for exploration and education only. The underlying model and data have limitations; do not rely on it for policy or real-world decisions.</p>
     </section>
   </div>
