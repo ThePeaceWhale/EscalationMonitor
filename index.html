@@ -250,11 +250,16 @@
     .popup-box {
       background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 1.5rem 1.75rem;
       max-width: 440px;
       width: 100%;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      transition: max-width 0.25s ease;
+    }
+    .popup-box.has-trend {
+      max-width: 540px;
+      padding: 1.6rem 1.9rem;
     }
     .popup-box h3 {
       margin: 0 0 1rem;
@@ -294,6 +299,48 @@
     .popup-box .risk-medium { background: rgba(234, 179, 8, 0.2); color: #facc15; }
     .popup-box .risk-high { background: rgba(239, 68, 68, 0.2); color: #f87171; }
     .popup-box .error-msg { color: #f87171; font-size: 0.85rem; }
+    .popup-trend-wrap {
+      margin-top: 1.25rem;
+      margin-bottom: 1rem;
+      padding: 1rem 0;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .popup-trend-wrap h4 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #94a3b8;
+      margin: 0 0 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .popup-trend-wrap h4::before {
+      content: '';
+      width: 4px;
+      height: 14px;
+      background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+      border-radius: 2px;
+    }
+    .popup-trend-chart {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 10px;
+      padding: 0.85rem;
+      min-height: 200px;
+      position: relative;
+    }
+    .popup-trend-chart canvas {
+      max-width: 100%;
+      height: auto !important;
+    }
+    .popup-trend-caption {
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+      letter-spacing: 0.02em;
+    }
     .popup-box .hint {
       font-size: 0.85rem;
       color: #64748b;
@@ -318,6 +365,9 @@
       border: 1px solid rgba(148, 163, 184, 0.15);
       border-radius: 8px;
       font-size: 0.8rem;
+    }
+    .popup-box.has-trend .popup-explanation {
+      max-height: 220px;
     }
     .explain-summary {
       padding: 0.6rem 0.85rem;
@@ -426,12 +476,19 @@
       <div class="result-content">Select the first country...</div>
     </div>
     <div id="popup-overlay" class="popup-overlay" aria-hidden="true">
-      <div class="popup-box">
+      <div class="popup-box" id="popup-box">
         <h3 id="popup-title">Escalation probability</h3>
         <div class="countries" id="popup-countries"></div>
         <div class="prob-value" id="popup-prob"></div>
         <div id="popup-risk"></div>
         <p class="hint" id="popup-hint"></p>
+        <div class="popup-trend-wrap" id="popup-trend-wrap" style="display: none;">
+          <h4>Escalation probability over time</h4>
+          <div class="popup-trend-chart">
+            <canvas id="popup-trend-chart" width="400" height="200"></canvas>
+          </div>
+          <p class="popup-trend-caption" id="popup-trend-caption"></p>
+        </div>
         <div class="popup-explanation-wrap" id="popup-explanation-wrap">
           <h4>What drove this score?</h4>
           <div class="popup-explanation" id="popup-explanation"></div>
@@ -444,6 +501,7 @@
     </div>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
     (function () {
       const GEO_TO_CSV = {
@@ -458,6 +516,7 @@
         'Venezuela': "Venezuela, Bolivarian Republic of",
         'Moldova': "Moldova, Republic of",
         'Democratic Republic of the Congo': "Congo, The Democratic Republic of the",
+        'Republic of the Congo': 'Congo',
         'Taiwan': "Taiwan, Province of China",
         'Syria': 'Syrian Arab Republic',
         'Laos': "Lao People's Democratic Republic",
@@ -469,10 +528,17 @@
         'Cape Verde': 'Cabo Verde',
         'W. Sahara': 'Western Sahara',
         'Brunei': 'Brunei Darussalam',
-        'Greenland': 'Denmark'
+        'Greenland': 'Denmark',
+        'Czech Republic': 'Czechia',
+        'State of Palestine': 'Palestine, State of',
+        'The Gambia': 'Gambia',
+        'Bahamas': 'Bahamas',
+        'The Bahamas': 'Bahamas'
       };
 
       let probMap = {};
+      let trendMap = {};
+      let trendChartInstance = null;
       let selected = [];
       let geoLayer = null;
       let selectedLayers = [];
@@ -494,6 +560,120 @@
       document.getElementById('popup-overlay').addEventListener('click', function (e) {
         if (e.target === this) hidePopup();
       });
+
+      const UPDATED_COUNTRIES_BASE = 'data/updated_countries';
+      const PROB_BIAS_FILE = 'prob_bias_<-2.6>.csv';
+
+      function parseDateFromFilename(filename) {
+        const m = filename.match(/prob_hot_country_(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})\.csv$/);
+        if (!m) return null;
+        const y = parseInt(m[1], 10);
+        const mon = parseInt(m[2], 10) - 1;
+        const d = parseInt(m[3], 10);
+        const h = parseInt(m[4], 10);
+        const min = parseInt(m[5], 10);
+        const s = parseInt(m[6], 10);
+        return new Date(y, mon, d, h, min, s);
+      }
+
+      function fillProbMapFromRow(key, row) {
+        if (row.length < 3) return;
+        const probVal = row[2];
+        const num = parseFloat(probVal);
+        if (String(probVal).startsWith('ERROR')) {
+          probMap[key] = { prob: probVal, contributions: null };
+          return;
+        }
+        if (Number.isNaN(num)) return;
+        const contributions = buildContributionsFromRow(row);
+        const bias = row.length > 12 ? parseFloat(row[12]) : null;
+        const logit = num > 0 && num < 1 ? Math.log(num / (1 - num)) : null;
+        probMap[key] = {
+          prob: num,
+          contributions: contributions || [],
+          logit: logit,
+          bias: Number.isNaN(bias) ? null : bias
+        };
+      }
+
+      function buildCsvToGeoAliases() {
+        const m = {};
+        for (const csvName of new Set(Object.values(GEO_TO_CSV))) {
+          m[csvName] = [csvName];
+        }
+        for (const geo in GEO_TO_CSV) {
+          const c = GEO_TO_CSV[geo];
+          if (!m[c]) m[c] = [c];
+          if (m[c].indexOf(geo) === -1) m[c].push(geo);
+        }
+        return m;
+      }
+
+      function loadProbBias() {
+        const csvToGeo = buildCsvToGeoAliases();
+        const url = 'data/' + encodeURIComponent(PROB_BIAS_FILE);
+        return fetch(url)
+          .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+          .then(text => {
+            text = text.replace(/^\uFEFF/, '').trim();
+            const lines = text.split(/\r?\n/);
+            for (let i = 1; i < lines.length; i++) {
+              const row = parseCSVLine(lines[i]);
+              if (row.length >= 3) {
+                const csvA = row[0].trim();
+                const csvB = row[1].trim();
+                const key = normKey(csvA, csvB);
+                fillProbMapFromRow(key, row);
+                const aliasesA = csvToGeo[csvA] || [csvA];
+                const aliasesB = csvToGeo[csvB] || [csvB];
+                for (let a = 0; a < aliasesA.length; a++) {
+                  for (let b = 0; b < aliasesB.length; b++) {
+                    const altKey = normKey(aliasesA[a], aliasesB[b]);
+                    if (probMap[altKey] === undefined) probMap[altKey] = probMap[key];
+                  }
+                }
+              }
+            }
+          })
+          .catch(() => {});
+      }
+
+      function loadTrendData() {
+        return fetch(UPDATED_COUNTRIES_BASE + '/manifest.json')
+          .then(r => r.json())
+          .then(files => {
+            const withDate = files.map(f => ({ f, date: parseDateFromFilename(f) })).filter(x => x.date);
+            withDate.sort((a, b) => a.date.getTime() - b.date.getTime());
+            const latestRowByKey = {};
+            const promises = withDate.map(({ f, date }) => {
+              return fetch(UPDATED_COUNTRIES_BASE + '/' + f)
+                .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+                .then(text => {
+                  const rows = splitCSVRows(text);
+                  for (let i = 1; i < rows.length; i++) {
+                    const row = parseCSVLine(rows[i]);
+                    if (row.length >= 3) {
+                      const key = normKey(row[0], row[1]);
+                      const prob = parseFloat(row[2]);
+                      if (Number.isNaN(prob)) continue;
+                      if (!trendMap[key]) trendMap[key] = [];
+                      trendMap[key].push({ date: date.getTime(), dateObj: date, prob: prob });
+                      latestRowByKey[key] = row;
+                    }
+                  }
+                })
+                .catch(() => {});
+            });
+            return Promise.allSettled(promises).then(() => latestRowByKey);
+          })
+          .then(latestRowByKey => {
+            Object.keys(trendMap).forEach(k => {
+              trendMap[k].sort((a, b) => a.date - b.date);
+              if (latestRowByKey[k]) fillProbMapFromRow(k, latestRowByKey[k]);
+            });
+          })
+          .catch(() => {});
+      }
 
       function normKey(a, b) {
         return [a, b].sort().join('|');
@@ -579,8 +759,93 @@
         return div.innerHTML;
       }
 
+      function formatTrendLabel(dateObj) {
+        const d = dateObj;
+        return d.getDate().toString().padStart(2, '0') + '/' + (d.getMonth() + 1).toString().padStart(2, '0') + ' ' + d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+      }
+
+      function renderTrendChart(key) {
+        const points = trendMap[key];
+        if (!points || points.length < 2) return;
+        const trendWrap = document.getElementById('popup-trend-wrap');
+        const canvas = document.getElementById('popup-trend-chart');
+        const captionEl = document.getElementById('popup-trend-caption');
+        if (trendChartInstance) {
+          trendChartInstance.destroy();
+          trendChartInstance = null;
+        }
+        const ctx = canvas.getContext('2d');
+        const labels = points.map(p => formatTrendLabel(p.dateObj));
+        const values = points.map(p => Math.round(p.prob * 10000) / 100);
+        const last = points[points.length - 1];
+        if (captionEl) captionEl.textContent = 'Latest snapshot: ' + formatTrendLabel(last.dateObj);
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+        gradient.addColorStop(0.5, 'rgba(56, 189, 248, 0.08)');
+        gradient.addColorStop(1, 'rgba(56, 189, 248, 0)');
+
+        trendChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Probability %',
+              data: values,
+              borderColor: 'rgba(56, 189, 248, 1)',
+              backgroundColor: gradient,
+              fill: true,
+              tension: 0.35,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: 'rgba(56, 189, 248, 1)',
+              pointBorderColor: 'rgba(15, 23, 42, 0.8)',
+              pointBorderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2.1,
+            layout: { padding: { top: 8, right: 12, bottom: 4, left: 4 } },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                titleColor: '#e2e8f0',
+                bodyColor: '#94a3b8',
+                borderColor: 'rgba(148, 163, 184, 0.25)',
+                borderWidth: 1,
+                padding: 10,
+                displayColors: true,
+                callbacks: {
+                  label: function (ctx) { return ctx.parsed.y.toFixed(2) + '%'; }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: 'rgba(148, 163, 184, 0.08)' },
+                ticks: { color: '#94a3b8', maxRotation: 40, font: { size: 11 } }
+              },
+              y: {
+                min: 0,
+                max: 100,
+                grid: { color: 'rgba(148, 163, 184, 0.08)' },
+                ticks: { color: '#94a3b8', font: { size: 11 }, callback: v => v + '%' }
+              }
+            }
+          }
+        });
+      }
+
       function showPopup(countryA, countryB, data) {
-        const prob = typeof data.prob === 'number' ? data.prob : 0;
+        const a = csvName(countryA);
+        const b = csvName(countryB);
+        const trendKey = (a && b) ? normKey(a, b) : null;
+        const hasTrend = trendKey && trendMap[trendKey] && trendMap[trendKey].length >= 1;
+        const latestFromTrend = hasTrend ? trendMap[trendKey][trendMap[trendKey].length - 1].prob : null;
+        const prob = (hasTrend && latestFromTrend != null) ? latestFromTrend : (typeof data.prob === 'number' ? data.prob : 0);
         const pct = (prob * 100).toFixed(2);
         const risk = getRiskLevel(prob);
         const oneIn = prob <= 0 || prob >= 1 ? '—' : (1 / prob).toFixed(0);
@@ -590,6 +855,20 @@
         riskEl.innerHTML = typeof data.prob === 'string' ? `<span class="error-msg">${data.prob}</span>` : `<span class="risk-badge ${risk.className}">${risk.label}</span>`;
         riskEl.className = '';
         document.getElementById('popup-hint').textContent = prob > 0 && prob < 1 ? `Roughly 1 in ${oneIn} chance of escalation between this pair.` : '';
+        const trendWrap = document.getElementById('popup-trend-wrap');
+        const popupBox = document.getElementById('popup-box');
+        if (trendKey && trendMap[trendKey] && trendMap[trendKey].length >= 2) {
+          renderTrendChart(trendKey);
+          trendWrap.style.display = 'block';
+          popupBox.classList.add('has-trend');
+        } else {
+          trendWrap.style.display = 'none';
+          popupBox.classList.remove('has-trend');
+          if (trendChartInstance) {
+            trendChartInstance.destroy();
+            trendChartInstance = null;
+          }
+        }
         const explEl = document.getElementById('popup-explanation');
         const explWrap = document.getElementById('popup-explanation-wrap');
         if (data.contributions && data.contributions.length > 0) {
@@ -756,36 +1035,14 @@
         return contributions;
       }
 
-      fetch('data/prob_bias_<-2.6>.csv')
-        .then(r => r.text())
-        .then(text => {
-          const lines = text.trim().split(/\r?\n/);
-          for (let i = 1; i < lines.length; i++) {
-            const row = parseCSVLine(lines[i]);
-            if (row.length >= 3) {
-              const key = normKey(row[0], row[1]);
-              const probVal = row[2];
-              const num = parseFloat(probVal);
-              if (String(probVal).startsWith('ERROR')) {
-                probMap[key] = { prob: probVal, contributions: null };
-              } else if (!Number.isNaN(num)) {
-                const contributions = buildContributionsFromRow(row);
-                const bias = row.length > 12 ? parseFloat(row[12]) : null;
-                const logit = num > 0 && num < 1 ? Math.log(num / (1 - num)) : null;
-                probMap[key] = {
-                  prob: num,
-                  contributions: contributions,
-                  logit: logit,
-                  bias: Number.isNaN(bias) ? null : bias
-                };
-              }
-            }
-          }
+      loadProbBias()
+        .then(() => loadTrendData())
+        .then(() => loadGeoJson())
+        .catch(() => {
+          setResult('Error loading data.', false);
           loadGeoJson();
-        })
-        .catch(() => setResult('Error loading data/prob.csv.', false));
+        });
     })();
   </script>
 </body>
 </html>
-
