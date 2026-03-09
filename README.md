@@ -8,6 +8,7 @@ A static web application that visualises the probability of conflict escalation 
 
 - **Interactive world map** — Click two countries to compare escalation probability
 - **Explainable results** — Popup shows probability, risk level (low/medium/high), and per-feature contributions
+- **Probability over time** — For country pairs present in the CSVs in `data/updated_countries`, the popup shows a chart of escalation probability over time (file format: `prob_hot_country_YYYY-MM-DD_HH-MM-SS.csv`). To refresh the list after adding new CSVs: `python utils/generate_manifest.py`
 - **Development roadmap** — Roadmap of de-escalation actions (donations, prediction models, wisdom of the crowd, internal channels)
 - **Contribute** — Bitcoin donations to support the project (via The Giving Block)
 
@@ -22,9 +23,14 @@ Escalation/
 ├── prevent_escalation.html
 ├── contribute.html
 ├── data/
-│   └── prob.csv         # Country pairs, probability, features, weights
+│   ├── weights.json          # Bias + 9 weights; probabilities computed client-side from this + CSV features
+│   ├── prob_bias_<-2.6>.csv  # Feature values for pairs not in updated_countries
+│   └── updated_countries/    # History for trend chart (date_time format)
+│       ├── manifest.json    # List of CSVs (generate with utils/generate_manifest.py)
+│       └── prob_hot_country_YYYY-MM-DD_HH-MM-SS.csv
 ├── utils/
-│   └── analyze.py
+│   ├── analyze.py
+│   └── generate_manifest.py # Generates manifest from data/updated_countries
 └── README.md
 ```
 
@@ -32,15 +38,21 @@ Escalation/
 
 ## Data format
 
-`data/prob.csv` must contain:
+**Weights** — The app loads **`data/weights.json`** (bias + 9 weights). Probabilities are **computed on the client** as \(P = \sigma(b + \sum_k w_k x_k)\) using these weights and the feature values from the CSVs. You can change the model by editing `weights.json` without regenerating the CSVs.
 
-- `country_a`, `country_b` — Country names (must match GeoJSON/ADMIN names or the mapping in the app)
-- `probability` — Escalation probability in [0, 1]
+**Data sources:**
+
+- **Pairs in `data/updated_countries`** — Feature values come from the trend CSVs; probability is computed from those values and the shared weights. The app shows the **latest** value and the over-time chart in the popup.
+- **All other pairs** — Feature values come from **`data/prob_bias`** (e.g. `prob_bias_<-2.6>.csv`); probability is again computed client-side from weights + features.
+
+CSV format (updated_countries and prob_bias):
+
+- `country_a`, `country_b` — Country names (must match GeoJSON/ADMIN or the app mapping)
+- `probability` — Optional; **ignored** when weights are loaded (probability is computed from weights + feature columns)
 - 9 feature columns: `news_negativity`, `news_intensity`, `escalation_keywords`, `contiguity`, `distance_closeness`, `common_language`, `both_in_nato`, `mil_exp_mean`, `ucdp_recent_interstate`
-- `bias` — Model intercept
-- 9 weight columns: `w_news_negativity`, `w_news_intensity`, etc.
+- `bias`, 9 weight columns — Optional in CSV; used only as fallback if `weights.json` is not loaded.
 
-The app computes per-feature contributions as `value × weight` and displays them in the popup.
+The app shows per-feature contributions (\(c_k = w_k \cdot x_k\)) in the popup.
 
 ---
 
