@@ -444,6 +444,105 @@
       border-color: rgba(56, 189, 248, 0.3);
       background: rgba(15, 23, 42, 0.95);
     }
+    /* Hot pairs banner — no container, text only */
+    #hot-pairs-banner {
+      flex-shrink: 0;
+      padding: 0.5rem 1.75rem;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      overflow: hidden;
+      position: relative;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    }
+    #hot-pairs-banner.hidden { display: none; }
+    #hot-pairs-banner .hot-pairs-label {
+      color: #94a3b8;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    #hot-pairs-banner .hot-pairs-track-wrap {
+      flex: 1;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent 0%, black 2%, black 98%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 2%, black 98%, transparent 100%);
+    }
+    #hot-pairs-banner .hot-pairs-track {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      animation: hot-pairs-scroll 35s linear infinite;
+      width: max-content;
+    }
+    #hot-pairs-banner .hot-pairs-track:hover { animation-play-state: paused; }
+    @keyframes hot-pairs-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    #hot-pairs-banner .hot-pair-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      color: #cbd5e1;
+      background: none;
+      font-family: inherit;
+      font-size: inherit;
+      transition: color 0.2s;
+    }
+    #hot-pairs-banner .hot-pair-item:hover {
+      color: #f1f5f9;
+    }
+    #hot-pairs-banner .hot-pair-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.6);
+      flex-shrink: 0;
+      animation: hot-pair-dot-pulse 2.5s ease-in-out infinite;
+    }
+    #hot-pairs-banner .hot-pair-item:nth-child(2) .hot-pair-dot { animation-delay: 0.3s; }
+    #hot-pairs-banner .hot-pair-item:nth-child(3) .hot-pair-dot { animation-delay: 0.6s; }
+    #hot-pairs-banner .hot-pair-item:nth-child(4) .hot-pair-dot { animation-delay: 0.9s; }
+    #hot-pairs-banner .hot-pair-item:nth-child(5) .hot-pair-dot { animation-delay: 1.2s; }
+    @keyframes hot-pair-dot-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    #hot-pairs-banner .hot-pair-pct {
+      color: #94a3b8;
+      font-weight: 600;
+      margin-left: 0.15rem;
+    }
+    #hot-pairs-banner .hot-pair-item:hover .hot-pair-pct {
+      color: #38bdf8;
+    }
+    #hot-pairs-banner .hot-pairs-dismiss {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      background: none;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    #hot-pairs-banner .hot-pairs-dismiss:hover {
+      color: #94a3b8;
+    }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -465,6 +564,13 @@
         </a>
       </div>
     </header>
+    <div id="hot-pairs-banner" class="hidden" aria-label="Higher probability pairs under monitoring">
+      <span class="hot-pairs-label">Higher probability pairs</span>
+      <div class="hot-pairs-track-wrap">
+        <div class="hot-pairs-track" id="hot-pairs-track"></div>
+      </div>
+      <button type="button" class="hot-pairs-dismiss" id="hot-pairs-dismiss" title="Hide this banner" aria-label="Hide banner">×</button>
+    </div>
     <div class="map-wrap">
       <div id="map"></div>
       <div class="map-overlay-topright">
@@ -940,7 +1046,7 @@
       }
 
       function loadGeoJson() {
-        fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
+        return fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
           .then(r => r.json())
           .then(geojson => {
             geoLayer = L.geoJSON(geojson, {
@@ -1035,9 +1141,89 @@
         return contributions;
       }
 
+      function getGeoName(csvName) {
+        for (const geo in GEO_TO_CSV) {
+          if (GEO_TO_CSV[geo] === csvName) return geo;
+        }
+        return csvName;
+      }
+
+      function loadHotPairsBanner() {
+        const bannerEl = document.getElementById('hot-pairs-banner');
+        const trackEl = document.getElementById('hot-pairs-track');
+        if (!bannerEl || !trackEl) return;
+        fetch(UPDATED_COUNTRIES_BASE + '/manifest.json')
+          .then(r => r.json())
+          .then(files => {
+            const withDate = files.map(f => ({ f, date: parseDateFromFilename(f) })).filter(x => x.date);
+            if (withDate.length === 0) return;
+            withDate.sort((a, b) => a.date.getTime() - b.date.getTime());
+            const latest = withDate[withDate.length - 1].f;
+            return fetch(UPDATED_COUNTRIES_BASE + '/' + latest)
+              .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
+          })
+          .then(text => {
+            if (!text) return;
+            const rows = splitCSVRows(text);
+            const pairs = [];
+            for (let i = 1; i < rows.length; i++) {
+              const row = parseCSVLine(rows[i]);
+              if (row.length >= 3) {
+                const prob = parseFloat(row[2]);
+                if (!Number.isNaN(prob)) {
+                  pairs.push({ country_a: row[0].trim(), country_b: row[1].trim(), prob: prob });
+                }
+              }
+            }
+            pairs.sort((a, b) => b.prob - a.prob);
+            const top = pairs.slice(0, 5);
+            if (top.length === 0) return;
+            function buildItemHtml(p) {
+              const pct = (p.prob * 100).toFixed(1);
+              const label = p.country_a + ' – ' + p.country_b + ' ' + pct + '%';
+              return '<button type="button" class="hot-pair-item" data-country-a="' + escapeHtml(p.country_a) + '" data-country-b="' + escapeHtml(p.country_b) + '" title="View details">' +
+                '<span class="hot-pair-dot" aria-hidden="true"></span>' +
+                '<span>' + escapeHtml(p.country_a) + ' – ' + escapeHtml(p.country_b) + '</span>' +
+                '<span class="hot-pair-pct">' + pct + '%</span></button>';
+            }
+            const fragment = top.map(buildItemHtml).join('');
+            trackEl.innerHTML = fragment + fragment;
+            bannerEl.classList.remove('hidden');
+            trackEl.querySelectorAll('.hot-pair-item').forEach(btn => {
+              btn.addEventListener('click', function () {
+                const a = this.getAttribute('data-country-a');
+                const b = this.getAttribute('data-country-b');
+                if (!a || !b) return;
+                selected = [];
+                selectedLayers.forEach(l => l.setStyle({ fillColor: '#334155', fillOpacity: 0.5 }));
+                selectedLayers = [];
+                selected.push(a, b);
+                if (geoLayer) {
+                  const geoA = getGeoName(a);
+                  const geoB = getGeoName(b);
+                  geoLayer.getLayers().forEach(layer => {
+                    const name = layer.feature.properties.ADMIN || layer.feature.properties.name || '';
+                    if (name === geoA || name === geoB) {
+                      layer.setStyle({ fillColor: '#0ea5e9', fillOpacity: 0.85 });
+                      selectedLayers.push(layer);
+                    }
+                  });
+                }
+                updateResult();
+              });
+            });
+          })
+          .catch(() => {});
+      }
+
+      document.getElementById('hot-pairs-dismiss').addEventListener('click', function () {
+        document.getElementById('hot-pairs-banner').classList.add('hidden');
+      });
+
       loadProbBias()
         .then(() => loadTrendData())
         .then(() => loadGeoJson())
+        .then(() => loadHotPairsBanner())
         .catch(() => {
           setResult('Error loading data.', false);
           loadGeoJson();
