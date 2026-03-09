@@ -732,6 +732,35 @@
 
       const UPDATED_COUNTRIES_BASE = 'data/updated_countries';
       const PROB_BIAS_FILE = 'prob_bias_<-2.6>.csv';
+      const WEIGHTS_FILE = 'data/weights.json';
+
+      let modelWeights = { bias: null, weights: null };
+
+      function sigmoid(z) {
+        return 1 / (1 + Math.exp(-z));
+      }
+
+      function computeProbabilityFromRow(row, bias, weights) {
+        if (row.length < 12 || !weights || weights.length !== 9) return null;
+        let z = typeof bias === 'number' && !Number.isNaN(bias) ? bias : 0;
+        for (let k = 0; k < 9; k++) {
+          const x = parseFloat(row[3 + k]);
+          const w = weights[k];
+          if (!Number.isNaN(x) && typeof w === 'number') z += w * x;
+        }
+        return sigmoid(z);
+      }
+
+      function loadWeights() {
+        return fetch(WEIGHTS_FILE)
+          .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(data => {
+            if (typeof data.bias === 'number' && Array.isArray(data.weights) && data.weights.length === 9) {
+              modelWeights = { bias: data.bias, weights: data.weights };
+            }
+          })
+          .catch(() => {});
+      }
 
       function parseDateFromFilename(filename) {
         const m = filename.match(/prob_hot_country_(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})\.csv$/);
@@ -747,21 +776,28 @@
 
       function fillProbMapFromRow(key, row) {
         if (row.length < 3) return;
-        const probVal = row[2];
-        const num = parseFloat(probVal);
-        if (String(probVal).startsWith('ERROR')) {
-          probMap[key] = { prob: probVal, contributions: null };
+        if (String(row[2]).startsWith('ERROR')) {
+          probMap[key] = { prob: row[2], contributions: null };
           return;
         }
-        if (Number.isNaN(num)) return;
-        const contributions = buildContributionsFromRow(row);
-        const bias = row.length > 12 ? parseFloat(row[12]) : null;
+        let num;
+        let bias;
+        const useWeights = modelWeights.weights && modelWeights.weights.length === 9;
+        if (useWeights && row.length >= 12) {
+          num = computeProbabilityFromRow(row, modelWeights.bias, modelWeights.weights);
+          bias = modelWeights.bias;
+        } else {
+          num = parseFloat(row[2]);
+          bias = row.length > 12 ? parseFloat(row[12]) : null;
+        }
+        if (num == null || Number.isNaN(num)) return;
+        const contributions = buildContributionsFromRow(row, useWeights ? modelWeights.weights : null);
         const logit = num > 0 && num < 1 ? Math.log(num / (1 - num)) : null;
         probMap[key] = {
           prob: num,
           contributions: contributions || [],
           logit: logit,
-          bias: Number.isNaN(bias) ? null : bias
+          bias: bias != null && !Number.isNaN(bias) ? bias : null
         };
       }
 
@@ -823,8 +859,13 @@
                     const row = parseCSVLine(rows[i]);
                     if (row.length >= 3) {
                       const key = normKey(row[0], row[1]);
-                      const prob = parseFloat(row[2]);
-                      if (Number.isNaN(prob)) continue;
+                      let prob;
+                      if (modelWeights.weights && modelWeights.weights.length === 9 && row.length >= 12) {
+                        prob = computeProbabilityFromRow(row, modelWeights.bias, modelWeights.weights);
+                      } else {
+                        prob = parseFloat(row[2]);
+                      }
+                      if (prob == null || Number.isNaN(prob)) continue;
                       if (!trendMap[key]) trendMap[key] = [];
                       trendMap[key].push({ date: date.getTime(), dateObj: date, prob: prob });
                       latestRowByKey[key] = row;
@@ -1181,12 +1222,14 @@
         'Recent interstate conflict'
       ];
 
-      function buildContributionsFromRow(row) {
-        if (row.length < 22) return null;
+      function buildContributionsFromRow(row, weightsArray) {
+        if (row.length < 12) return null;
         const contributions = [];
         for (let k = 0; k < 9; k++) {
           const val = parseFloat(row[3 + k]);
-          const w = parseFloat(row[13 + k]);
+          const w = weightsArray != null && weightsArray[k] != null
+            ? weightsArray[k]
+            : (row.length >= 22 ? parseFloat(row[13 + k]) : NaN);
           if (Number.isNaN(val) || Number.isNaN(w)) continue;
           const c = val * w;
           let effect = 'neutral risk';
@@ -1232,8 +1275,13 @@
             for (let i = 1; i < rows.length; i++) {
               const row = parseCSVLine(rows[i]);
               if (row.length >= 3) {
-                const prob = parseFloat(row[2]);
-                if (!Number.isNaN(prob)) {
+                let prob;
+                if (modelWeights.weights && modelWeights.weights.length === 9 && row.length >= 12) {
+                  prob = computeProbabilityFromRow(row, modelWeights.bias, modelWeights.weights);
+                } else {
+                  prob = parseFloat(row[2]);
+                }
+                if (prob != null && !Number.isNaN(prob)) {
                   pairs.push({ country_a: row[0].trim(), country_b: row[1].trim(), prob: prob });
                 }
               }
@@ -1283,7 +1331,8 @@
         document.getElementById('hot-pairs-banner').classList.add('hidden');
       });
 
-      loadProbBias()
+      loadWeights()
+        .then(() => loadProbBias())
         .then(() => loadTrendData())
         .then(() => loadGeoJson())
         .then(() => loadHotPairsBanner())
