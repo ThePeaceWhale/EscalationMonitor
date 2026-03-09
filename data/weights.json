@@ -1,0 +1,15 @@
+{
+  "_comment": "weights order: news_negativity, news_intensity, escalation_keywords, contiguity, distance_closeness, common_language, both_in_nato, mil_exp_mean, ucdp_recent_interstate",
+  "bias": -3,
+  "weights": [
+    1.0,
+    0.85,
+    1.0,
+    0.9,
+    0.15,
+    -0.25,
+    -2,
+    0.45,
+    1.1
+  ]
+}
