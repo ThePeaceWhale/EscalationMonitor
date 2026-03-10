@@ -286,6 +286,26 @@
       font-weight: 400;
       margin: 0 0.25rem;
     }
+    .popup-conflict-notice {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.85rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      color: #fef3c7;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 8px;
+    }
+    .popup-conflict-notice::before {
+      content: '';
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/%3E%3Cline x1='12' y1='9' x2='12' y2='13'/%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'/%3E%3C/svg%3E") no-repeat center;
+      background-size: contain;
+    }
     .popup-box .prob-value {
       font-size: 2rem;
       font-weight: 700;
@@ -649,6 +669,7 @@
       <div class="popup-box" id="popup-box">
         <h3 id="popup-title">Escalation probability</h3>
         <div class="countries" id="popup-countries"></div>
+        <div id="popup-conflict-notice" class="popup-conflict-notice" style="display: none;" role="status"></div>
         <div class="prob-value" id="popup-prob"></div>
         <div id="popup-risk"></div>
         <p class="hint" id="popup-hint"></p>
@@ -794,11 +815,14 @@
         if (num == null || Number.isNaN(num)) return;
         const contributions = buildContributionsFromRow(row, useWeights ? modelWeights.weights : null);
         const logit = num > 0 && num < 1 ? Math.log(num / (1 - num)) : null;
+        const ucdpVal = row.length > 11 ? parseFloat(row[11]) : NaN;
+        const inConflict = !Number.isNaN(ucdpVal) && ucdpVal > 0;
         probMap[key] = {
           prob: num,
           contributions: contributions || [],
           logit: logit,
-          bias: bias != null && !Number.isNaN(bias) ? bias : null
+          bias: bias != null && !Number.isNaN(bias) ? bias : null,
+          inConflict: inConflict
         };
       }
 
@@ -889,6 +913,13 @@
       function normKey(a, b) {
         return [a, b].sort().join('|');
       }
+
+      const KNOWN_CONFLICT_PAIRS = new Set([
+        'Russian Federation|Ukraine',
+        'Israel|Palestine, State of',
+        'Israel|Syrian Arab Republic',
+        'Armenia|Azerbaijan'
+      ]);
 
       function csvName(geoName) {
         if (!geoName) return null;
@@ -1061,6 +1092,16 @@
         const risk = getRiskLevel(prob);
         const oneIn = prob <= 0 || prob >= 1 ? '—' : (1 / prob).toFixed(0);
         document.getElementById('popup-countries').innerHTML = `${countryA}<span class="sep">↔</span>${countryB}`;
+        const conflictNotice = document.getElementById('popup-conflict-notice');
+        const isKnownConflict = trendKey && KNOWN_CONFLICT_PAIRS.has(trendKey);
+        const inConflict = data.inConflict || isKnownConflict;
+        if (inConflict) {
+          conflictNotice.textContent = 'These two countries are in an active or recent interstate conflict.';
+          conflictNotice.style.display = 'flex';
+        } else {
+          conflictNotice.style.display = 'none';
+          conflictNotice.textContent = '';
+        }
         document.getElementById('popup-prob').textContent = pct + '%';
         const riskEl = document.getElementById('popup-risk');
         riskEl.innerHTML = typeof data.prob === 'string' ? `<span class="error-msg">${data.prob}</span>` : `<span class="risk-badge ${risk.className}">${risk.label}</span>`;
