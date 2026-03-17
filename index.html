@@ -627,6 +627,179 @@
     #hot-pairs-banner .hot-pairs-dismiss:hover {
       color: #94a3b8;
     }
+    /* Weekly news section */
+    #news-section {
+      flex-shrink: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(15, 23, 42, 0.99) 100%);
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+      font-size: 0.9rem;
+      position: relative;
+    }
+    #news-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 10%, rgba(56, 189, 248, 0.25) 50%, transparent 90%);
+      pointer-events: none;
+    }
+    #news-section .news-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.75rem 1.75rem;
+      cursor: pointer;
+      user-select: none;
+      color: #94a3b8;
+      transition: color 0.2s, background 0.2s;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      background: transparent;
+    }
+    #news-section .news-header:hover {
+      color: #e2e8f0;
+      background: rgba(30, 41, 59, 0.5);
+    }
+    #news-section .news-header:focus-visible {
+      outline: 2px solid rgba(56, 189, 248, 0.5);
+      outline-offset: 2px;
+    }
+    #news-section .news-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    #news-section .news-header-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.15), rgba(56, 189, 248, 0.05));
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    #news-section .news-header-icon svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.9;
+    }
+    #news-section .news-header h4 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: inherit;
+      letter-spacing: 0.01em;
+    }
+    #news-section .news-toggle {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: rgba(148, 163, 184, 0.1);
+      color: #94a3b8;
+      font-size: 0.75rem;
+      line-height: 1;
+      transition: transform 0.2s, color 0.2s, background 0.2s;
+      border-radius: 6px;
+    }
+    #news-section .news-header:hover .news-toggle {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
+    #news-section.expanded .news-toggle {
+      transform: rotate(180deg);
+    }
+    #news-section .news-list-wrap {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease-out;
+    }
+    #news-section.expanded .news-list-wrap {
+      max-height: 280px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+    }
+    #news-section .news-list-wrap::-webkit-scrollbar {
+      width: 6px;
+    }
+    #news-section .news-list-wrap::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    #news-section .news-list-wrap::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.35);
+      border-radius: 3px;
+    }
+    #news-section .news-list-wrap::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.5);
+    }
+    #news-section .news-list {
+      padding: 0.5rem 1.75rem 1rem;
+      list-style: none;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    #news-section .news-item {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+    }
+    #news-section .news-item:last-child {
+      border-bottom: none;
+    }
+    #news-section .news-item a {
+      color: #cbd5e1;
+      text-decoration: none;
+      display: block;
+      padding: 0.5rem 0.6rem 0.45rem;
+      margin: 0 -0.6rem;
+      border-radius: 6px;
+      border-left: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      line-height: 1.35;
+    }
+    #news-section .news-item a:hover {
+      color: #f1f5f9;
+      background: rgba(30, 41, 59, 0.4);
+      border-left-color: rgba(56, 189, 248, 0.6);
+    }
+    #news-section .news-item a:focus-visible {
+      outline: 2px solid rgba(56, 189, 248, 0.4);
+      outline-offset: 2px;
+    }
+    #news-section .news-item .news-meta {
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #news-section .news-item .news-meta .news-source {
+      display: inline-block;
+      padding: 0.12rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(148, 163, 184, 0.12);
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    #news-section .news-empty {
+      padding: 0.85rem 1.75rem 1rem;
+      color: #64748b;
+      font-size: 0.85rem;
+      margin: 0;
+      font-style: italic;
+    }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -664,6 +837,21 @@
     <div id="result" class="empty">
       <span class="result-dot" aria-hidden="true"></span>
       <div class="result-content">Select the first country...</div>
+    </div>
+    <div id="news-section" class="collapsed" aria-label="Main news of the week">
+      <button type="button" class="news-header" id="news-header" aria-expanded="false" aria-controls="news-list-wrap">
+        <span class="news-header-left">
+          <span class="news-header-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2"/><path d="M7 11h10"/><path d="M7 16h6"/></svg>
+          </span>
+          <h4>Main news of the week</h4>
+        </span>
+        <span class="news-toggle" aria-hidden="true">▼</span>
+      </button>
+      <div id="news-list-wrap" class="news-list-wrap" role="region">
+        <ul class="news-list" id="news-list"></ul>
+        <p class="news-empty hidden" id="news-empty">No items this week.</p>
+      </div>
     </div>
     <div id="popup-overlay" class="popup-overlay" aria-hidden="true">
       <div class="popup-box" id="popup-box">
@@ -1373,11 +1561,59 @@
         document.getElementById('hot-pairs-banner').classList.add('hidden');
       });
 
+      function loadWeeklyNews() {
+        return fetch('data/weekly_news.json')
+          .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (items) {
+            const listEl = document.getElementById('news-list');
+            const emptyEl = document.getElementById('news-empty');
+            const headerEl = document.getElementById('news-header');
+            if (!Array.isArray(items) || items.length === 0) {
+              listEl.innerHTML = '';
+              emptyEl.classList.remove('hidden');
+              headerEl.querySelector('h4').textContent = 'Main news of the week';
+              return;
+            }
+            emptyEl.classList.add('hidden');
+            headerEl.querySelector('h4').textContent = 'Main news of the week (' + items.length + ')';
+            listEl.innerHTML = items.map(function (item) {
+              const title = (item.title || '').trim() || 'Untitled';
+              const url = (item.url || '').trim() || '#';
+              const source = (item.source || '').trim();
+              const date = (item.date || '').trim();
+              const metaParts = [];
+              if (source) metaParts.push('<span class="news-source">' + escapeHtml(source) + '</span>');
+              if (date) metaParts.push('<span class="news-date">' + escapeHtml(date) + '</span>');
+              const metaHtml = metaParts.length ? '<div class="news-meta">' + metaParts.join('') + '</div>' : '';
+              return '<li class="news-item"><a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(title) + metaHtml + '</a></li>';
+            }).join('');
+          })
+          .catch(function () {
+            document.getElementById('news-list').innerHTML = '';
+            document.getElementById('news-empty').classList.remove('hidden');
+            document.getElementById('news-empty').textContent = 'News could not be loaded.';
+            document.getElementById('news-header').querySelector('h4').textContent = 'Main news of the week';
+          });
+      }
+
+      function escapeHtml(s) {
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      document.getElementById('news-header').addEventListener('click', function () {
+        const section = document.getElementById('news-section');
+        const expanded = section.classList.toggle('expanded');
+        this.setAttribute('aria-expanded', expanded);
+      });
+
       loadWeights()
         .then(() => loadProbBias())
         .then(() => loadTrendData())
         .then(() => loadGeoJson())
         .then(() => loadHotPairsBanner())
+        .then(() => loadWeeklyNews())
         .catch(() => {
           setResult('Error loading data.', false);
           loadGeoJson();
