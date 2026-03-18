@@ -2,8 +2,8 @@ name: Update weekly news
 
 on:
   schedule:
-    - cron: '0 7 * * *'   # ogni giorno alle 07:00 UTC
-  workflow_dispatch:       # esecuzione manuale dal tab Actions
+    - cron: '0 7 * * *'   # 07:00 UTC
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,26 +13,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
+        uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Dipendenze (se presenti)
         run: |
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Generate weekly news
-        run: |
-          python utils/generate_weekly_news.py
+      - name: Esegui generate_weekly_news.py
+        run: python utils/generate_weekly_news.py
 
-      - name: Commit changes if any
+      - name: Commit e push se weekly_news.json è cambiato
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
