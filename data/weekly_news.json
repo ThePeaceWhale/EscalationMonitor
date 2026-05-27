@@ -1,182 +1,152 @@
 [
   {
-    "title": "Deal with US not imminent, Iran says",
-    "url": "https://www.bbc.com/news/articles/cglpp2yk336o?at_medium=RSS&at_campaign=rss",
+    "title": "Israeli strike in Gaza City kills new head of Hamas's military wing",
+    "url": "https://www.bbc.com/news/articles/cjwppj1yn7go?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "Dozens killed in Lebanon as Israel intensifies strikes",
+    "url": "https://www.bbc.com/news/articles/cx211rgngp0o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "One killed and nine missing after chemical explosion at US paper mill",
+    "url": "https://www.bbc.com/news/articles/cj9ppm94xw9o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "Woman caught after 30 years on the run is jailed for armed robberies",
+    "url": "https://www.bbc.com/news/articles/cx21dr3lekpo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "Hotel that refused to give tourist tap water acted lawfully, Italian court rules",
+    "url": "https://www.bbc.com/news/articles/c4g4yd8q0j7o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "Trump-backed challenger beats veteran US senator in Texas primary",
+    "url": "https://www.bbc.com/news/articles/clypprglrlyo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "YouTuber arrested for allegedly using AI to defame Korean actor",
+    "url": "https://www.bbc.com/news/articles/c759y6pvezgo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "First Ghanaians set to be repatriated from South Africa over anti-immigrant protests",
+    "url": "https://www.bbc.com/news/articles/cy0269pwxg3o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "Major film union in India calls for boycott of superstar Ranveer Singh",
+    "url": "https://www.bbc.com/news/articles/c0q2y01jqk9o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "Hundreds of children die within months as measles cases soar in Bangladesh",
+    "url": "https://www.bbc.com/news/articles/cwy2d5d7wn5o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "White House erects UFC cage ahead of US 250th anniversary celebrations",
+    "url": "https://www.bbc.com/news/articles/cz622647eg3o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "How Trump is transforming Washington - by adding his face everywhere",
+    "url": "https://www.bbc.com/news/videos/ce8pp9r03z7o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-27"
+  },
+  {
+    "title": "Nasa unveils next steps to build permanent Moon base",
+    "url": "https://www.bbc.com/news/articles/c39228nxyr4o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Iran condemns US strikes as 'gross violation' of ceasefire",
+    "url": "https://www.bbc.com/news/articles/c4g44yl7q70o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Can EU find a Russia whisperer to mediate an end to war in Ukraine?",
+    "url": "https://www.bbc.com/news/articles/cqxpp73wqero?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Russia 'relentlessly targeting' critical infrastructure and democracy, GCHQ says",
+    "url": "https://www.bbc.com/news/articles/c4g44gprnnvo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Four killed as school minibus collides with train in Belgium",
+    "url": "https://www.bbc.com/news/articles/c70vvd17rg7o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "India's communists once ruled millions. What happened to them?",
+    "url": "https://www.bbc.com/news/articles/cwy2gr1rpnqo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Why temperature records are being not only broken but smashed",
+    "url": "https://www.bbc.com/news/articles/c62rrj66p3eo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Osaka sparkles in golden French Open outfit",
+    "url": "https://www.bbc.com/sport/tennis/articles/cr7ppkp598zo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Watch: UFC arena construction begins at White House ahead of fight",
+    "url": "https://www.bbc.com/news/videos/cz7253q4g4jo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Paris 'punishingly hot' as Western Europe hit by heatwave",
+    "url": "https://www.bbc.com/news/videos/cy522zrkr7lo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Watch: Bridge collapses and car swept away in China river",
+    "url": "https://www.bbc.com/news/videos/cdjppm1rpn7o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Watch: Drones crash into water after Sydney light show malfunction",
+    "url": "https://www.bbc.com/news/videos/clyppgdl3xwo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-05-26"
+  },
+  {
+    "title": "Wave of child abuse cases shakes schools in Paris",
+    "url": "https://www.bbc.com/news/articles/c8e8gx2d7j4o?at_medium=RSS&at_campaign=rss",
     "source": "BBC News",
     "date": "2026-05-25"
-  },
-  {
-    "title": "Oil prices slide on hopes of US-Iran peace deal",
-    "url": "https://www.bbc.com/news/articles/c809m7g29r7o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-25"
-  },
-  {
-    "title": "Large-scale Russian attack on Ukraine leaves four dead and dozens injured",
-    "url": "https://www.bbc.com/news/articles/clyp6831yp5o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-25"
-  },
-  {
-    "title": "How Saudi Arabia's spending spree reached the end of the line",
-    "url": "https://www.bbc.com/news/articles/cx21g0828reo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-25"
-  },
-  {
-    "title": "Moment of gas explosion at China coal mine",
-    "url": "https://www.bbc.com/news/videos/cedpp9ldnl9o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-25"
-  },
-  {
-    "title": "She was told to marry in a country which bans girls' education. So she got in a taxi and fled",
-    "url": "https://www.bbc.com/news/articles/ce3pgn48wnqo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Turkish riot police storm opposition offices after leaders ousted",
-    "url": "https://www.bbc.com/news/articles/c87qwrqre83o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Blast targeting train kills at least 20 in Pakistan",
-    "url": "https://www.bbc.com/news/articles/cm2pkd58xldo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "RAF jet carrying defence secretary has signal jammed near Russian border",
-    "url": "https://www.bbc.com/news/articles/clyp0jrxv7ro?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Suspect killed after opening fire on Secret Service near White House",
-    "url": "https://www.bbc.com/news/articles/cjwp82ye4y3o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Ebola outbreak poses massive challenges, warns nurse",
-    "url": "https://www.bbc.com/news/articles/cy421wgr2mpo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Man killed in shark attack off Australia's north-east coast",
-    "url": "https://www.bbc.com/news/articles/cn9pq5l2d14o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "One killed and many feared trapped under collapsed building in Philippines",
-    "url": "https://www.bbc.com/news/articles/cgqpklv42jeo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Bolivian minister's convoy ambushed while overseeing roadblock clearance",
-    "url": "https://www.bbc.com/news/articles/ce3pdw1z59do?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "California declares emergency as fire crews race to contain toxic leak",
-    "url": "https://www.bbc.com/news/articles/c3w2l249j8go?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Red Cross volunteers die from suspected Ebola in DR Congo",
-    "url": "https://www.bbc.com/news/articles/c759knxln0wo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "At least 82 killed in Chinese coal mine explosion",
-    "url": "https://www.bbc.com/news/articles/c5y0ve18qlko?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Nascar champion Kyle Busch died of pneumonia and sepsis, family says",
-    "url": "https://www.bbc.com/news/articles/ceqpwx5741no?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Trump says Iran deal 'largely negotiated' including reopening Strait of Hormuz",
-    "url": "https://www.bbc.com/news/articles/crmp121z3z8o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Morocco wants tourists to visit Western Sahara. Some say it's tightening its control",
-    "url": "https://www.bbc.com/news/articles/cvgldqk4w95o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "Indian billionaires buy foreign companies as growth slows at home",
-    "url": "https://www.bbc.com/news/articles/cwy21x20q23o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "It's like the Olympics - except steroids are allowed",
-    "url": "https://www.bbc.com/news/articles/cedpz1zqp8po?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "BBC at the site of China's worst mining disaster in more than a decade",
-    "url": "https://www.bbc.com/news/videos/c809m33yjz7o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-24"
-  },
-  {
-    "title": "French mum and partner held until trial after sons abandoned by road in Portugal",
-    "url": "https://www.bbc.com/news/articles/cq5p75l7n17o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-23"
-  },
-  {
-    "title": "F1 great Prost 'injured as masked gang raid home'",
-    "url": "https://www.bbc.com/sport/formula1/articles/clyp65zpxe0o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-23"
-  },
-  {
-    "title": "Rubio meets Modi during India visit with energy high on agenda",
-    "url": "https://www.bbc.com/news/articles/c87qrwyyrn2o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-23"
-  },
-  {
-    "title": "Putin vows retaliation after accusing Ukraine of hitting student dormitory",
-    "url": "https://www.bbc.com/news/articles/c5y74lwx395o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-23"
-  },
-  {
-    "title": "Senegal's president sacks PM and former ally after months-long feud",
-    "url": "https://www.bbc.com/news/articles/c202jwpd24go?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-23"
-  },
-  {
-    "title": "Rosenberg: Luhansk strike sparks Russian accusations and vow to retaliate",
-    "url": "https://www.bbc.com/news/articles/cvgz05jyrrpo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-23"
-  },
-  {
-    "title": "I survived a missile strike in the Strait of Hormuz, but my friend has not been found",
-    "url": "https://www.bbc.com/news/articles/ce8pn63q771o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-05-23"
   }
 ]
