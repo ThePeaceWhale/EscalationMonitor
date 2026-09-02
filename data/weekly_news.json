@@ -1,79 +1,139 @@
 [
   {
+    "title": "US sailors arrive in Thailand's Pattaya after record 250 days at sea",
+    "url": "https://www.bbc.co.uk/news/articles/cg7k09z4lj9o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Why US troops have a history in this raucous Thai city",
+    "url": "https://www.bbc.co.uk/news/videos/c5yw03jr892o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Zelensky says airlines should avoid Russian airspace as Ukraine escalates drone operations",
+    "url": "https://www.bbc.co.uk/news/articles/c9v9yydy2wvo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Rosenberg: Putin's veiled threat to UK part of Russia's campaign against West",
+    "url": "https://www.bbc.co.uk/news/articles/c62j50n131mo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Nepal-Tibet flood response turns to relief and recovery",
+    "url": "https://www.bbc.co.uk/news/articles/c8xk45k9r1go?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "More than 900 killed in Gaza this year despite ceasefire, Hamas-run health ministry says",
+    "url": "https://www.bbc.co.uk/news/articles/c7708dy33pdo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "BBC travels inside occupied Lebanon as officials say Israel expanding positions",
+    "url": "https://www.bbc.co.uk/news/articles/cge41d19gq9o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Bus crash on Egypt's Red Sea coast kills 22",
+    "url": "https://www.bbc.co.uk/news/articles/cn8mr1myy2ko?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Madagascar ex-Senate chief sentenced  to hard labour over deadly Gen Z protest crackdown",
+    "url": "https://www.bbc.co.uk/news/articles/cz0z3x4n9ypo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Charlie Kirk murder suspect pleads not guilty as judge clears way for death penalty trial",
+    "url": "https://www.bbc.co.uk/news/articles/cj4jn9q7evpo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "South Korea jails care home head for sexually assaulting disabled residents",
+    "url": "https://www.bbc.co.uk/news/articles/cn74vzl52l4o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Tiger Woods to change plea after crash arrest",
+    "url": "https://www.bbc.co.uk/news/articles/c5y7xvpn5kno?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Guinea-Bissau referendum approves new constitution that expands president's powers",
+    "url": "https://www.bbc.co.uk/news/articles/c93eny4dqp2o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Jailed HK activist Joshua Wong pleads guilty to foreign collusion",
+    "url": "https://www.bbc.co.uk/news/articles/cx2zmzg0408o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Germany says Russia behind Leipzig airport drone attack",
+    "url": "https://www.bbc.co.uk/news/articles/c5ylm3m67n2o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "Apple Maps renames Lake Ontario as Lake America after Trump order",
+    "url": "https://www.bbc.co.uk/news/articles/cddvyyz0e47o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-02"
+  },
+  {
+    "title": "River water smashed into tunnel and chased me for 20 minutes, Nepal worker tells BBC",
+    "url": "https://www.bbc.co.uk/news/articles/cg49590v6k1o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-01"
+  },
+  {
+    "title": "Ariana Grande makes emotional tour exit and steps back from public life",
+    "url": "https://www.bbc.co.uk/news/articles/c4gj0l34g78o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-01"
+  },
+  {
+    "title": "Remarkable US oil deal puzzles analysts - and angers many Venezuelans",
+    "url": "https://www.bbc.co.uk/news/articles/c93vkgk5e1yo?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-01"
+  },
+  {
+    "title": "Could the man who murdered a Christian missionary and his sons walk free in India?",
+    "url": "https://www.bbc.co.uk/news/articles/cpd0x701qd9o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-01"
+  },
+  {
+    "title": "Will self-flying planes transform the skies?",
+    "url": "https://www.bbc.co.uk/news/articles/c1l123mmrg7o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-01"
+  },
+  {
     "title": "'I've never been to Afghanistan': Six million deportees forced to start over under the Taliban",
     "url": "https://www.bbc.co.uk/news/articles/c2e074nn8eko?at_medium=RSS&at_campaign=rss",
     "source": "BBC News",
     "date": "2026-09-01"
   },
   {
-    "title": "Nepal death toll crosses 1,000 as rescuers race to find workers trapped in mud-filled tunnels",
-    "url": "https://www.bbc.co.uk/news/articles/c5ylvgq9q71o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "Russian attack hits rail workers in new deadly strikes on Kyiv",
-    "url": "https://www.bbc.co.uk/news/articles/cx2zmdgry3do?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "The final minutes before floodwater crashed through Nepal-China border",
-    "url": "https://www.bbc.co.uk/news/articles/c0qxw1qw3g7o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "Israeli fire kills three in Gaza City during reported raid, medics say",
-    "url": "https://www.bbc.co.uk/news/articles/c1wxex4vg35o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "Ex-gang boss guilty of orchestrating 1996 murder of rapper Tupac Shakur",
-    "url": "https://www.bbc.co.uk/news/articles/c24j5192j7jo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "Teen girl charged with murder over recording of San Diego mosque attack",
-    "url": "https://www.bbc.co.uk/news/articles/c2dw3wn972no?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "Shein valued at $26bn after long-awaited stock market debut",
-    "url": "https://www.bbc.co.uk/news/articles/c3v0qrz7z25o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "South Korean police officer admits to closing missing person cases to avoid work",
-    "url": "https://www.bbc.co.uk/news/articles/c780wy7ype4o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "Zambia's president sworn in for second term while opponent detained",
-    "url": "https://www.bbc.co.uk/news/articles/c62m7vp5895o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "US army secretary resigns after months of tension",
-    "url": "https://www.bbc.co.uk/news/articles/czjz31dk1xmo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "Why did Modi urge Putin to end Ukraine war - and will he listen?",
-    "url": "https://www.bbc.co.uk/news/articles/cx2zy3wdqqeo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-09-01"
-  },
-  {
-    "title": "What it was like inside court for Tupac Shakur’s murder trial verdict",
-    "url": "https://www.bbc.co.uk/news/videos/cz6zp2pwzx5o?at_medium=RSS&at_campaign=rss",
+    "title": "Pistol in a lake gives hope for French cold case",
+    "url": "https://www.bbc.co.uk/news/articles/c74eklrm344o?at_medium=RSS&at_campaign=rss",
     "source": "BBC News",
     "date": "2026-09-01"
   },
@@ -84,8 +144,14 @@
     "date": "2026-09-01"
   },
   {
-    "title": "Not just guilty or not - The jury's options in Lindsay Clancy's murder trial",
-    "url": "https://www.bbc.co.uk/news/articles/c93vgv4kr49o?at_medium=RSS&at_campaign=rss",
+    "title": "Cup noodles made with cold water? BBC tries Japan's viral snack",
+    "url": "https://www.bbc.co.uk/news/videos/ce30lqln299o?at_medium=RSS&at_campaign=rss",
+    "source": "BBC News",
+    "date": "2026-09-01"
+  },
+  {
+    "title": "Norway's new king takes oath as mourners pay respects to his late father",
+    "url": "https://www.bbc.co.uk/news/videos/ceq8945e71ro?at_medium=RSS&at_campaign=rss",
     "source": "BBC News",
     "date": "2026-09-01"
   },
@@ -96,86 +162,20 @@
     "date": "2026-09-01"
   },
   {
-    "title": "Amazon rigged $20bn worth of ad prices, US lawsuit alleges",
-    "url": "https://www.bbc.co.uk/news/articles/cvgy91nvy27o?at_medium=RSS&at_campaign=rss",
+    "title": "Orangutans in danger as wildfires blaze through Borneo",
+    "url": "https://www.bbc.co.uk/news/videos/c74emdn49kdo?at_medium=RSS&at_campaign=rss",
     "source": "BBC News",
     "date": "2026-08-31"
   },
   {
-    "title": "US singer D4vd's celebrity lawyers withdraw from murder case",
-    "url": "https://www.bbc.co.uk/news/articles/crr451lpl4no?at_medium=RSS&at_campaign=rss",
+    "title": "Across Latin America, 'aura battles' burst onto the scene",
+    "url": "https://www.bbc.co.uk/news/videos/c158z7g23zqo?at_medium=RSS&at_campaign=rss",
     "source": "BBC News",
     "date": "2026-08-31"
   },
   {
-    "title": "'She slipped out of my hand' - children missing after ferry sinks off northern Cyprus",
-    "url": "https://www.bbc.co.uk/news/articles/c1mv5ggg1l8o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "US Supreme Court clears way for Trump to keep building White House ballroom",
-    "url": "https://www.bbc.co.uk/news/articles/c9w457e7ydlo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "Festival honouring Dolly Parton set for Nashville and London",
-    "url": "https://www.bbc.co.uk/news/articles/c5ywd9q3ywvo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "Man arrested after Swiss rave shooting that killed woman",
-    "url": "https://www.bbc.co.uk/news/articles/cddv92n194vo?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "US and Iran trade strikes for first time in weeks",
-    "url": "https://www.bbc.co.uk/news/articles/cx2z72x5z1po?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "Ex-congressman George Santos banned from betting platform for life",
-    "url": "https://www.bbc.co.uk/news/articles/cpwlxy49225o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "Messi retires from international football with 'nothing left to give'",
-    "url": "https://www.bbc.co.uk/sport/football/articles/ceq89y38elro?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "John Galliano exhibition at New York Met cancelled after backlash",
-    "url": "https://www.bbc.co.uk/news/articles/c4gkp6pgy03o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "Trump pushes Apple to change 'Lake Ontario' to 'Lake America' on its maps",
-    "url": "https://www.bbc.co.uk/news/articles/c2l80eq5lxno?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "Two dead and more than a dozen missing after 'terrifying' flash flood hits Grand Canyon",
-    "url": "https://www.bbc.co.uk/news/articles/clylkjyez1do?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "South African airline defends low-altitude aerial stunt over packed stadium",
-    "url": "https://www.bbc.co.uk/news/articles/c3rew8jqny5o?at_medium=RSS&at_campaign=rss",
-    "source": "BBC News",
-    "date": "2026-08-31"
-  },
-  {
-    "title": "Japan Inc is betting big on India as China risks deepen",
-    "url": "https://www.bbc.co.uk/news/articles/cz64955d56po?at_medium=RSS&at_campaign=rss",
+    "title": "'I haven't lost my hope' - the search for missing loved ones",
+    "url": "https://www.bbc.co.uk/news/videos/c4g79v842xjo?at_medium=RSS&at_campaign=rss",
     "source": "BBC News",
     "date": "2026-08-31"
   }
